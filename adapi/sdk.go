@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -80,8 +81,23 @@ func (s *Sdk) Active(c *Client) (*Result, error) {
 		return nil, err
 	}
 
-	u := fmt.Sprintf("%s/api/client/active?appId=%d&os=%s&ip=%s&model=%s&idfa=%s&oaid=%s&imei=%s",
-		s.address, c.AppId, strings.ToLower(c.Os), c.Ip, url.QueryEscape(c.Model), c.Idfa, c.Oaid, c.Imei)
+	params := url.Values{}
+	params.Add("appId", strconv.FormatInt(c.AppId, 10))
+	params.Add("os", strings.ToLower(c.Os))
+	params.Add("ip", c.Ip)
+	params.Add("ua", c.Ua)
+	params.Add("model", c.Model)
+	params.Add("idfa", c.Idfa)
+	params.Add("oaid", c.Oaid)
+	params.Add("imei", c.Imei)
+	params.Add("channel", c.Channel)
+	params.Add("version", c.Version)
+	if c.Extra != nil {
+		extra, _ := json.Marshal(c.Extra)
+		params.Add("extra", string(extra))
+	}
+
+	u := fmt.Sprintf("%s/api/client/active?%s", s.address, params.Encode())
 	return s.httpMatchGet(u)
 }
 
