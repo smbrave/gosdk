@@ -1,6 +1,9 @@
 package adapi
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type Client struct {
 	AppId   int64             //分配一个appid
@@ -25,7 +28,7 @@ func (c *Client) Check() error {
 	if c.AppId == 0 {
 		return errors.New("appid must set")
 	}
-	if c.Channel == "" {
+	if strings.ToLower(c.Os) != "ios" && c.Channel == "" {
 		return errors.New("channel must set")
 	}
 	if c.Version == "" {
