@@ -114,8 +114,8 @@ func (s *Sdk) Register(adId int64, extra map[string]string) error {
 		params.Add("extra", string(ex))
 	}
 
-	url := fmt.Sprintf("%s/api/client/register?adId=%d",
-		s.address, adId)
+	url := fmt.Sprintf("%s/api/client/register?%s",
+		s.address, params.Encode())
 
 	return s.httpGet(url)
 }
@@ -127,6 +127,7 @@ func (s *Sdk) Register(adId int64, extra map[string]string) error {
 	支付位置：payLocation （内容自定义）
 	支付商品：goodsId、goodsName
 */
+
 func (s *Sdk) Pay(adId int64, extra map[string]string) error {
 	params := url.Values{}
 	params.Add("adId", strconv.FormatInt(adId, 10))
@@ -135,8 +136,8 @@ func (s *Sdk) Pay(adId int64, extra map[string]string) error {
 		params.Add("extra", string(ex))
 	}
 
-	url := fmt.Sprintf("%s/api/client/pay?adId=%d",
-		s.address, adId)
+	url := fmt.Sprintf("%s/api/client/pay?%s",
+		s.address, params.Encode())
 
 	return s.httpGet(url)
 }
