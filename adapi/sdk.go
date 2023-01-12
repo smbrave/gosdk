@@ -101,14 +101,42 @@ func (s *Sdk) Active(c *Client) (*Result, error) {
 	return s.httpMatchGet(u)
 }
 
-func (s *Sdk) Register(adId int64) error {
+/*
+	extra存放扩展数据，注册相关信息都填上
+	unionid、phone、openid、nickname
+*/
+
+func (s *Sdk) Register(adId int64, extra map[string]string) error {
+	params := url.Values{}
+	params.Add("adId", strconv.FormatInt(adId, 10))
+	if extra != nil {
+		ex, _ := json.Marshal(extra)
+		params.Add("extra", string(ex))
+	}
+
 	url := fmt.Sprintf("%s/api/client/register?adId=%d",
 		s.address, adId)
+
 	return s.httpGet(url)
 }
 
-func (s *Sdk) Pay(adId int64) error {
+/*
+	extra存放扩展数据，支付相关信息都填上
+	支付金额：payFee （单位分）
+	支付方式：payType（weixin、alipay、apple）
+	支付位置：payLocation （内容自定义）
+	支付商品：goodsId、goodsName
+*/
+func (s *Sdk) Pay(adId int64, extra map[string]string) error {
+	params := url.Values{}
+	params.Add("adId", strconv.FormatInt(adId, 10))
+	if extra != nil {
+		ex, _ := json.Marshal(extra)
+		params.Add("extra", string(ex))
+	}
+
 	url := fmt.Sprintf("%s/api/client/pay?adId=%d",
 		s.address, adId)
+
 	return s.httpGet(url)
 }
