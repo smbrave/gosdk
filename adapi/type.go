@@ -21,8 +21,9 @@ type Client struct {
 }
 
 type Result struct {
-	AdId   int64  `json:"adId"`
-	Source string `json:"source"`
+	AdId   int64             `json:"adId"`
+	Source string            `json:"source"`
+	Extra  map[string]string `json:"extra"`
 }
 
 func (c *Client) Check() error {
