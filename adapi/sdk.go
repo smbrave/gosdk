@@ -76,7 +76,7 @@ func (s *Sdk) httpMatchGet(url string) (*Result, error) {
 	return rsp.Data, nil
 }
 
-func (s *Sdk) Active(c *Client) (*Result, error) {
+func (s *Sdk) Match(c *Client) (*Result, error) {
 	if err := c.Check(); err != nil {
 		return nil, err
 	}
@@ -92,13 +92,28 @@ func (s *Sdk) Active(c *Client) (*Result, error) {
 	params.Add("imei", c.Imei)
 	params.Add("channel", c.Channel)
 	params.Add("version", c.Version)
+	params.Add("active", strconv.FormatBool(c.Active))
 	if c.Extra != nil {
 		extra, _ := json.Marshal(c.Extra)
 		params.Add("extra", string(extra))
 	}
 
-	u := fmt.Sprintf("%s/api/client/active?%s", s.address, params.Encode())
+	u := fmt.Sprintf("%s/api/client/match?%s", s.address, params.Encode())
 	return s.httpMatchGet(u)
+}
+
+func (s *Sdk) Active(adId int64, extra map[string]string) error {
+	params := url.Values{}
+	params.Add("adId", strconv.FormatInt(adId, 10))
+	if extra != nil {
+		ex, _ := json.Marshal(extra)
+		params.Add("extra", string(ex))
+	}
+
+	url := fmt.Sprintf("%s/api/client/active?%s",
+		s.address, params.Encode())
+
+	return s.httpGet(url)
 }
 
 /*

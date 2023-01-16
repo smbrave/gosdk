@@ -17,6 +17,7 @@ type Client struct {
 	Oaid    string            //客户端的广告id，android时有效
 	Imei    string            //设备唯一识别码
 	Extra   map[string]string //其他额外数据
+	Active  bool              // 是否直接激活
 }
 
 type Result struct {
