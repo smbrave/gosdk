@@ -203,7 +203,7 @@ func (s *Sdk) GetOceanAccountReport(startDay, endDay string) ([]*AccountReport, 
 		r.Click = cast.ToInt64(data["click"])
 		r.Download = cast.ToInt64(data["download"])
 		r.Active = cast.ToInt64(data["active"])
-		r.Pay = cast.ToInt64(data["convert"])
+		r.Pay = cast.ToInt64(data["pay"])
 		r.PayAmount = cast.ToFloat64(data["payAmount"])
 		results = append(results, r)
 	}
