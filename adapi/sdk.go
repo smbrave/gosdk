@@ -3,23 +3,27 @@ package adapi
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/cast"
 	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Sdk struct {
 	address string
+	appId   string
 }
 
-func NewSdk(address string) *Sdk {
+func NewSdk(address string, appId string) *Sdk {
 	if address == "" {
 		address = "http://127.0.0.1:9280"
 	}
 
 	return &Sdk{
+		appId:   appId,
 		address: address,
 	}
 }
@@ -82,6 +86,9 @@ func (s *Sdk) Match(c *Client) (*Result, error) {
 	}
 
 	params := url.Values{}
+	if c.AppId == 0 {
+		params.Add("appId", s.appId)
+	}
 	params.Add("appId", strconv.FormatInt(c.AppId, 10))
 	params.Add("os", strings.ToLower(c.Os))
 	params.Add("ip", c.Ip)
@@ -155,4 +162,95 @@ func (s *Sdk) Pay(adId int64, extra map[string]string) error {
 		s.address, params.Encode())
 
 	return s.httpGet(url)
+}
+
+func (s *Sdk) GetOceanAccountReport(startDay, endDay string) ([]*AccountReport, error) {
+	if startDay == "" && endDay == "" {
+		startDay = time.Now().Format("2006-01-02")
+		endDay = startDay
+	}
+	url := fmt.Sprintf("%s/admin/ocean/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	type rsp_t struct {
+		BaseResponse
+		Data []map[string]interface{} `json:"data"`
+	}
+
+	var rsp rsp_t
+	if err := json.Unmarshal(body, &rsp); err != nil {
+		return nil, err
+	}
+	if rsp.Code != 0 {
+		return nil, fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
+	}
+	results := make([]*AccountReport, 0)
+	for _, data := range rsp.Data {
+		r := new(AccountReport)
+		r.Id = cast.ToString(data["id"])
+		r.Name = cast.ToString(data["name"])
+		r.Day = cast.ToString(data["day"])
+		r.Cost = cast.ToFloat64(data["cost"])
+		r.Show = cast.ToInt64(data["show"])
+		r.Click = cast.ToInt64(data["click"])
+		r.Download = cast.ToInt64(data["download"])
+		r.Active = cast.ToInt64(data["active"])
+		r.Pay = cast.ToInt64(data["convert"])
+		r.PayAmount = cast.ToFloat64(data["payAmount"])
+		results = append(results, r)
+	}
+	return results, nil
+}
+
+func (s *Sdk) GetBaiduAccountReport(startDay, endDay string) ([]*AccountReport, error) {
+	if startDay == "" && endDay == "" {
+		startDay = time.Now().Format("2006-01-02")
+		endDay = startDay
+	}
+	url := fmt.Sprintf("%s/admin/baidu/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	type rsp_t struct {
+		BaseResponse
+		Data []map[string]interface{} `json:"data"`
+	}
+
+	var rsp rsp_t
+	if err := json.Unmarshal(body, &rsp); err != nil {
+		return nil, err
+	}
+	if rsp.Code != 0 {
+		return nil, fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
+	}
+	results := make([]*AccountReport, 0)
+	for _, data := range rsp.Data {
+		r := new(AccountReport)
+		r.Id = cast.ToString(data["userId"])
+		r.Name = cast.ToString(data["userName"])
+		r.Day = cast.ToString(data["day"])
+		r.Cost = cast.ToFloat64(data["cost"])
+		r.Show = cast.ToInt64(data["impression"])
+		r.Click = cast.ToInt64(data["click"])
+		r.Download = cast.ToInt64(data["download"])
+		r.Active = cast.ToInt64(data["active"])
+		r.Pay = cast.ToInt64(data["pay"])
+		results = append(results, r)
+	}
+	return results, nil
 }

@@ -5,6 +5,11 @@ import (
 	"strings"
 )
 
+type BaseResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
 type Client struct {
 	AppId   int64             //分配一个appid
 	Channel string            //安装包的渠道
@@ -37,4 +42,17 @@ func (c *Client) Check() error {
 		return errors.New("version must set")
 	}
 	return nil
+}
+
+type AccountReport struct {
+	Id        string  `json:"id"`
+	Name      string  `json:"name"`
+	Day       string  `json:"day"`
+	Cost      float64 `json:"cost"`
+	Show      int64   `json:"show"`
+	Click     int64   `json:"click"`
+	Download  int64   `json:"download"`
+	Active    int64   `json:"active"`
+	Pay       int64   `json:"pay"`
+	PayAmount float64 `json:"payAmount"`
 }

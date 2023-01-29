@@ -7,15 +7,12 @@ import (
 )
 
 func TestSdk(t1 *testing.T) {
-	type tt struct {
-		A string            `json:"a"`
-		B map[string]string `json:"b"`
-	}
-	var t tt
-	s := `{"a":"1", "b":{"1":"2","3":"4"}}`
-	if err := json.Unmarshal([]byte(s), &t); err != nil {
+	sdk := NewSdk("https://ad.xinzhibid.com", "10000")
+	res, err := sdk.GetOceanAccountReport("", "")
+	//res, err := sdk.GetBaiduAccountReport("", "")
+	if err != nil {
 		panic(err)
 	}
-	res, _ := json.Marshal(t)
-	fmt.Println(string(res))
+	r, _ := json.Marshal(res)
+	fmt.Println(string(r))
 }
