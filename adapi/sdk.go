@@ -80,16 +80,14 @@ func (s *Sdk) httpMatchGet(url string) (*Result, error) {
 	return rsp.Data, nil
 }
 
-func (s *Sdk) Match(c *Client) (*Result, error) {
+func (s *Sdk) Match(c *Request) (*Result, error) {
 	if err := c.Check(); err != nil {
 		return nil, err
 	}
 
 	params := url.Values{}
-	if c.AppId == 0 {
-		params.Add("appId", s.appId)
-	}
-	params.Add("appId", strconv.FormatInt(c.AppId, 10))
+
+	params.Add("appId", s.appId)
 	params.Add("os", strings.ToLower(c.Os))
 	params.Add("ip", c.Ip)
 	params.Add("ua", c.Ua)

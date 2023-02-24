@@ -10,8 +10,7 @@ type BaseResponse struct {
 	Message string `json:"message"`
 }
 
-type Client struct {
-	AppId   int64             //分配一个appid
+type Request struct {
 	Channel string            //安装包的渠道
 	Version string            //安装包版本
 	Os      string            //手机系统类别 android、ioss
@@ -31,10 +30,7 @@ type Result struct {
 	Extra  map[string]string `json:"extra"`
 }
 
-func (c *Client) Check() error {
-	if c.AppId == 0 {
-		return errors.New("appid must set")
-	}
+func (c *Request) Check() error {
 	if strings.ToLower(c.Os) != "ios" && c.Channel == "" {
 		return errors.New("channel must set")
 	}
