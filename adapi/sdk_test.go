@@ -7,8 +7,8 @@ import (
 )
 
 func TestSdk(t1 *testing.T) {
-	sdk := NewSdk("https://ad.xinzhibid.com", "10000")
-	res, err := sdk.GetOceanAccountReport("", "")
+	sdk := NewSdk("http://ad.yic8.cn", "10020")
+	res, err := sdk.Relation(1519)
 	//res, err := sdk.GetBaiduAccountReport("", "")
 	if err != nil {
 		panic(err)

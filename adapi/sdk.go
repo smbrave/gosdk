@@ -80,6 +80,32 @@ func (s *Sdk) httpMatchGet(url string) (*Result, error) {
 	return rsp.Data, nil
 }
 
+func (s *Sdk) httpDataGet(url string) (map[string]interface{}, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	type rsp_t struct {
+		Code    int                    `json:"code"`
+		Message string                 `json:"message"`
+		Data    map[string]interface{} `json:"data"`
+	}
+
+	var rsp rsp_t
+	if err := json.Unmarshal(body, &rsp); err != nil {
+		return nil, err
+	}
+	if rsp.Code != 0 {
+		return nil, fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
+	}
+	return rsp.Data, nil
+}
+
 func (s *Sdk) Match(c *Request) (*Result, error) {
 	if err := c.Check(); err != nil {
 		return nil, err
@@ -160,6 +186,23 @@ func (s *Sdk) Pay(adId int64, extra map[string]string) error {
 		s.address, params.Encode())
 
 	return s.httpGet(url)
+}
+
+func (s *Sdk) Relation(adId int64) (*AdRelation, error) {
+	params := url.Values{}
+	params.Add("adId", strconv.FormatInt(adId, 10))
+
+	url := fmt.Sprintf("%s/api/client/relation?%s",
+		s.address, params.Encode())
+
+	var relation AdRelation
+	data, err := s.httpDataGet(url)
+	if err != nil {
+		return nil, err
+	}
+	res, _ := json.Marshal(data)
+	json.Unmarshal(res, &relation)
+	return &relation, nil
 }
 
 func (s *Sdk) GetOceanAccountReport(startDay, endDay string) ([]*AccountReport, error) {

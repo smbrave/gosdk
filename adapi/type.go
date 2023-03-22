@@ -52,3 +52,33 @@ type AccountReport struct {
 	Pay       int64   `json:"pay"`
 	PayAmount float64 `json:"payAmount"`
 }
+
+type Relation struct {
+	MatchType    string `json:"matchType"`
+	CreateTime   int64  `json:"createTime"`
+	ActiveTime   int64  `json:"activeTime"`
+	RegisterTime int64  `json:"registerTime"`
+	PayTime      int64  `json:"payTime"`
+	Source       string `json:"source"`
+}
+
+type Click struct {
+	Action       string `json:"action"`
+	AccountId    int64  `json:"accountId"`
+	AccountName  string `json:"accountName"`
+	PlanId       int64  `json:"planId"`
+	PlanName     string `json:"planName"`
+	GroupId      int64  `json:"groupId"`
+	GroupName    string `json:"groupName"`
+	CreativeId   int64  `json:"creativeId"`
+	CreativeName string `json:"creativeName"`
+	Ip           string `json:"ip"`
+	Ua           string `json:"ua"`
+	Idfa         string `json:"idfa"`
+	Oaid         string `json:"oaid"`
+}
+
+type AdRelation struct {
+	Relation *Relation `json:"relation"`
+	Click    *Click    `json:"click"`
+}
