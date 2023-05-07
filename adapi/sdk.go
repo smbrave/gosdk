@@ -236,8 +236,8 @@ func (s *Sdk) GetOceanAccountReport(startDay, endDay string) ([]*AccountReport, 
 	results := make([]*AccountReport, 0)
 	for _, data := range rsp.Data {
 		r := new(AccountReport)
-		r.Id = cast.ToString(data["id"])
-		r.Name = cast.ToString(data["name"])
+		r.Id = cast.ToString(data["userId"])
+		r.Name = cast.ToString(data["userName"])
 		r.Day = cast.ToString(data["day"])
 		r.Cost = cast.ToFloat64(data["cost"])
 		r.Show = cast.ToInt64(data["show"])
