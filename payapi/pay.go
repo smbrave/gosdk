@@ -18,6 +18,9 @@ type Pay struct {
 }
 
 func NewPay(address string, token string) *Pay {
+	if address == "" {
+		address = "http://127.0.0.1:9281"
+	}
 	return &Pay{
 		address: address,
 		token:   token,
