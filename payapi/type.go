@@ -14,7 +14,7 @@ type OrderGoods struct {
 	GoodsId   string `json:"goodsId"`
 	GoodsName string `json:"goodsName"`
 	Source    string `json:"source"`
-	Autopay   bool   `json:"autopay"`
+	Autopay   string `json:"autopay"`
 }
 
 type CreateOrderReq struct {
