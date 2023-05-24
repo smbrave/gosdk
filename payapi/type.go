@@ -20,6 +20,7 @@ type OrderGoods struct {
 type CreateOrderReq struct {
 	OutTradeNo string      `json:"outTradeNo"`
 	PayType    string      `json:"payType"`
+	PayChannel string      `json:"payChannel"`
 	PayPrice   int64       `json:"payPrice"`
 	NotifyUrl  string      `json:"notifyUrl"`
 	User       *OrderUser  `json:"user,omitempty"`
