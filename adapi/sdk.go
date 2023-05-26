@@ -192,7 +192,7 @@ func (s *Sdk) Relation(adId int64) (*AdRelation, error) {
 	params := url.Values{}
 	params.Add("adId", strconv.FormatInt(adId, 10))
 
-	url := fmt.Sprintf("%s/api/client/relation?%s",
+	url := fmt.Sprintf("%s/api/ad/client/relation?%s",
 		s.address, params.Encode())
 
 	var relation AdRelation
