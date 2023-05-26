@@ -129,7 +129,7 @@ func (s *Sdk) Match(c *Request) (*Result, error) {
 		params.Add("extra", string(extra))
 	}
 
-	u := fmt.Sprintf("%s/api/client/match?%s", s.address, params.Encode())
+	u := fmt.Sprintf("%s/api/ad/client/match?%s", s.address, params.Encode())
 	return s.httpMatchGet(u)
 }
 
@@ -141,7 +141,7 @@ func (s *Sdk) Active(adId int64, extra map[string]string) error {
 		params.Add("extra", string(ex))
 	}
 
-	url := fmt.Sprintf("%s/api/client/active?%s",
+	url := fmt.Sprintf("%s/api/ad/client/active?%s",
 		s.address, params.Encode())
 
 	return s.httpGet(url)
@@ -160,7 +160,7 @@ func (s *Sdk) Register(adId int64, extra map[string]string) error {
 		params.Add("extra", string(ex))
 	}
 
-	url := fmt.Sprintf("%s/api/client/register?%s",
+	url := fmt.Sprintf("%s/api/ad/client/register?%s",
 		s.address, params.Encode())
 
 	return s.httpGet(url)
@@ -182,7 +182,7 @@ func (s *Sdk) Pay(adId int64, extra map[string]string) error {
 		params.Add("extra", string(ex))
 	}
 
-	url := fmt.Sprintf("%s/api/client/pay?%s",
+	url := fmt.Sprintf("%s/api/ad/client/pay?%s",
 		s.address, params.Encode())
 
 	return s.httpGet(url)
@@ -210,7 +210,7 @@ func (s *Sdk) GetOceanAccountReport(startDay, endDay string) ([]*AccountReport, 
 		startDay = time.Now().Format("2006-01-02")
 		endDay = startDay
 	}
-	url := fmt.Sprintf("%s/admin/ocean/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
+	url := fmt.Sprintf("%s/admin/ad/ocean/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -256,7 +256,7 @@ func (s *Sdk) GetBaiduAccountReport(startDay, endDay string) ([]*AccountReport, 
 		startDay = time.Now().Format("2006-01-02")
 		endDay = startDay
 	}
-	url := fmt.Sprintf("%s/admin/baidu/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
+	url := fmt.Sprintf("%s/admin/ad/baidu/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
 
 	resp, err := http.Get(url)
 	if err != nil {
