@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -17,11 +16,8 @@ func HttpPostJson(link string, header map[string]string, json []byte) ([]byte, e
 	client.Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	p := url.Values{}
-	u, _ := url.Parse(link)
 
-	u.RawQuery = p.Encode()
-	req, err := http.NewRequest("POST", u.String(), bytes.NewBuffer(json))
+	req, err := http.NewRequest("POST", link, bytes.NewBuffer(json))
 	if err != nil {
 		return nil, err
 	}
@@ -50,10 +46,8 @@ func HttpGet(link string, header map[string]string) ([]byte, error) {
 	client.Transport = &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	p := url.Values{}
-	u, _ := url.Parse(link)
-	u.RawQuery = p.Encode()
-	req, err := http.NewRequest("GET", u.String(), nil)
+
+	req, err := http.NewRequest("GET", link, nil)
 	if err != nil {
 		return nil, err
 	}
