@@ -49,6 +49,7 @@ type AccountReport struct {
 	Click     int64   `json:"click"`
 	Download  int64   `json:"download"`
 	Active    int64   `json:"active"`
+	Register  int64   `json:"register"`
 	Pay       int64   `json:"pay"`
 	PayAmount float64 `json:"payAmount"`
 }

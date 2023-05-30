@@ -3,9 +3,8 @@ package adapi
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/smbrave/gosdk/util"
 	"github.com/spf13/cast"
-	"io"
-	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -15,9 +14,10 @@ import (
 type Sdk struct {
 	address string
 	appId   string
+	token   string
 }
 
-func NewSdk(address string, appId string) *Sdk {
+func NewSdk(address string, appId string, token string) *Sdk {
 	if address == "" {
 		address = "http://127.0.0.1:9281"
 	}
@@ -25,15 +25,15 @@ func NewSdk(address string, appId string) *Sdk {
 	return &Sdk{
 		appId:   appId,
 		address: address,
+		token:   token,
 	}
 }
 
 func (s *Sdk) httpGet(url string) error {
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	body, err := io.ReadAll(resp.Body)
+
+	body, err := util.HttpGet(url, map[string]string{
+		"x-token": s.token,
+	})
 	if err != nil {
 		return err
 	}
@@ -55,11 +55,9 @@ func (s *Sdk) httpGet(url string) error {
 }
 
 func (s *Sdk) httpMatchGet(url string) (*Result, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	body, err := io.ReadAll(resp.Body)
+	body, err := util.HttpGet(url, map[string]string{
+		"x-token": s.token,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -81,11 +79,9 @@ func (s *Sdk) httpMatchGet(url string) (*Result, error) {
 }
 
 func (s *Sdk) httpDataGet(url string) (map[string]interface{}, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	body, err := io.ReadAll(resp.Body)
+	body, err := util.HttpGet(url, map[string]string{
+		"x-token": s.token,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -210,45 +206,9 @@ func (s *Sdk) GetOceanAccountReport(startDay, endDay string) ([]*AccountReport, 
 		startDay = time.Now().Format("2006-01-02")
 		endDay = startDay
 	}
-	url := fmt.Sprintf("%s/admin/ad/ocean/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
+	url := fmt.Sprintf("%s/api/ad/ocean/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	type rsp_t struct {
-		BaseResponse
-		Data []map[string]interface{} `json:"data"`
-	}
-
-	var rsp rsp_t
-	if err := json.Unmarshal(body, &rsp); err != nil {
-		return nil, err
-	}
-	if rsp.Code != 0 {
-		return nil, fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
-	}
-	results := make([]*AccountReport, 0)
-	for _, data := range rsp.Data {
-		r := new(AccountReport)
-		r.Id = cast.ToString(data["userId"])
-		r.Name = cast.ToString(data["userName"])
-		r.Day = cast.ToString(data["day"])
-		r.Cost = cast.ToFloat64(data["cost"])
-		r.Show = cast.ToInt64(data["show"])
-		r.Click = cast.ToInt64(data["click"])
-		r.Download = cast.ToInt64(data["download"])
-		r.Active = cast.ToInt64(data["active"])
-		r.Pay = cast.ToInt64(data["pay"])
-		r.PayAmount = cast.ToFloat64(data["payAmount"])
-		results = append(results, r)
-	}
-	return results, nil
+	return s.getAccountReport(url, startDay, endDay)
 }
 
 func (s *Sdk) GetBaiduAccountReport(startDay, endDay string) ([]*AccountReport, error) {
@@ -256,13 +216,30 @@ func (s *Sdk) GetBaiduAccountReport(startDay, endDay string) ([]*AccountReport, 
 		startDay = time.Now().Format("2006-01-02")
 		endDay = startDay
 	}
-	url := fmt.Sprintf("%s/admin/ad/baidu/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
+	url := fmt.Sprintf("%s/api/ad/baidu/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
+	return s.getAccountReport(url, startDay, endDay)
+}
+
+func (s *Sdk) GetTencentAccountReport(startDay, endDay string) ([]*AccountReport, error) {
+	if startDay == "" && endDay == "" {
+		startDay = time.Now().Format("2006-01-02")
+		endDay = startDay
 	}
-	body, err := io.ReadAll(resp.Body)
+	url := fmt.Sprintf("%s/api/ad/tencent/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
+
+	return s.getAccountReport(url, startDay, endDay)
+}
+
+func (s *Sdk) getAccountReport(reqUrl string, startDay, endDay string) ([]*AccountReport, error) {
+	if startDay == "" && endDay == "" {
+		startDay = time.Now().Format("2006-01-02")
+		endDay = startDay
+	}
+
+	body, err := util.HttpGet(reqUrl, map[string]string{
+		"x-token": s.token,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -282,14 +259,15 @@ func (s *Sdk) GetBaiduAccountReport(startDay, endDay string) ([]*AccountReport, 
 	results := make([]*AccountReport, 0)
 	for _, data := range rsp.Data {
 		r := new(AccountReport)
-		r.Id = cast.ToString(data["userId"])
-		r.Name = cast.ToString(data["userName"])
+		r.Id = cast.ToString(data["accounId"])
+		r.Name = cast.ToString(data["accounName"])
 		r.Day = cast.ToString(data["day"])
 		r.Cost = cast.ToFloat64(data["cost"])
-		r.Show = cast.ToInt64(data["impression"])
+		r.Show = cast.ToInt64(data["show"])
 		r.Click = cast.ToInt64(data["click"])
 		r.Download = cast.ToInt64(data["download"])
 		r.Active = cast.ToInt64(data["active"])
+		r.Register = cast.ToInt64(data["register"])
 		r.Pay = cast.ToInt64(data["pay"])
 		r.PayAmount = cast.ToFloat64(data["payAmount"])
 		results = append(results, r)

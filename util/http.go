@@ -44,7 +44,7 @@ func HttpPostJson(link string, header map[string]string, json []byte) ([]byte, e
 }
 
 // Get 请求  link：请求url
-func HttpGet(link string) ([]byte, error) {
+func HttpGet(link string, header map[string]string) ([]byte, error) {
 	client := &http.Client{Timeout: 20 * time.Second}
 	//忽略https的证书
 	client.Transport = &http.Transport{
@@ -56,6 +56,11 @@ func HttpGet(link string) ([]byte, error) {
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+	if header != nil {
+		for k, v := range header {
+			req.Header.Add(k, v)
+		}
 	}
 	resp, err := client.Do(req)
 	if err != nil {
