@@ -42,6 +42,7 @@ func (c *Request) Check() error {
 
 type AccountReport struct {
 	Id        string  `json:"id"`
+	Type      string  `json:"type"`
 	Name      string  `json:"name"`
 	Day       string  `json:"day"`
 	Cost      float64 `json:"cost"`

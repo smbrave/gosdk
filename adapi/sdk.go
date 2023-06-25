@@ -201,41 +201,14 @@ func (s *Sdk) Relation(adId int64) (*AdRelation, error) {
 	return &relation, nil
 }
 
-func (s *Sdk) GetOceanAccountReport(startDay, endDay string) ([]*AccountReport, error) {
+func (s *Sdk) GetAccountReport(startDay, endDay string, accountType string) ([]*AccountReport, error) {
 	if startDay == "" && endDay == "" {
 		startDay = time.Now().Format("2006-01-02")
 		endDay = startDay
 	}
-	url := fmt.Sprintf("%s/api/ad/ocean/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
 
-	return s.getAccountReport(url, startDay, endDay)
-}
-
-func (s *Sdk) GetBaiduAccountReport(startDay, endDay string) ([]*AccountReport, error) {
-	if startDay == "" && endDay == "" {
-		startDay = time.Now().Format("2006-01-02")
-		endDay = startDay
-	}
-	url := fmt.Sprintf("%s/api/ad/baidu/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
-
-	return s.getAccountReport(url, startDay, endDay)
-}
-
-func (s *Sdk) GetTencentAccountReport(startDay, endDay string) ([]*AccountReport, error) {
-	if startDay == "" && endDay == "" {
-		startDay = time.Now().Format("2006-01-02")
-		endDay = startDay
-	}
-	url := fmt.Sprintf("%s/api/ad/tencent/account/report?appId=%s&startDay=%s&endDay=%s", s.address, s.appId, startDay, endDay)
-
-	return s.getAccountReport(url, startDay, endDay)
-}
-
-func (s *Sdk) getAccountReport(reqUrl string, startDay, endDay string) ([]*AccountReport, error) {
-	if startDay == "" && endDay == "" {
-		startDay = time.Now().Format("2006-01-02")
-		endDay = startDay
-	}
+	reqUrl := fmt.Sprintf("%s/api/ad/account/report?appId=%s&startDay=%s&endDay=%s&accountType=%s",
+		s.address, s.appId, startDay, endDay, accountType)
 
 	body, err := util.HttpGet(reqUrl, map[string]string{
 		"x-token": s.token,
@@ -261,6 +234,7 @@ func (s *Sdk) getAccountReport(reqUrl string, startDay, endDay string) ([]*Accou
 		r := new(AccountReport)
 		r.Id = cast.ToString(data["accounId"])
 		r.Name = cast.ToString(data["accounName"])
+		r.Type = cast.ToString(data["accounType"])
 		r.Day = cast.ToString(data["day"])
 		r.Cost = cast.ToFloat64(data["cost"])
 		r.Show = cast.ToInt64(data["show"])

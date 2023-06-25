@@ -1,18 +1,23 @@
 package adapi
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
 )
 
 func TestSdk(t1 *testing.T) {
-	sdk := NewSdk("http://ad.yic8.cn", "10020")
-	res, err := sdk.Relation(1519)
-	//res, err := sdk.GetBaiduAccountReport("", "")
+	fmt.Println("ok1")
+	sdk := NewSdk("http://localhost:9281", "10020", "")
+	res, err := sdk.GetAccountReport("", "", "")
 	if err != nil {
 		panic(err)
 	}
-	r, _ := json.Marshal(res)
-	fmt.Println(string(r))
+	fmt.Println("ok2")
+	fmt.Println(len(res))
+	fmt.Printf("%+v", res)
+	for i, r := range res {
+		fmt.Println(i, r.Name)
+	}
+
+	fmt.Println("ok3")
 }
