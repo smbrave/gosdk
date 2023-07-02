@@ -244,6 +244,7 @@ func (s *Sdk) GetAccountReport(startDay, endDay string, accountType string) ([]*
 		r.Register = cast.ToInt64(data["register"])
 		r.Pay = cast.ToInt64(data["pay"])
 		r.PayAmount = cast.ToFloat64(data["payAmount"])
+		r.Balance = cast.ToFloat64(data["balance"])
 		results = append(results, r)
 	}
 	return results, nil
