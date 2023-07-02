@@ -53,6 +53,7 @@ type AccountReport struct {
 	Register  int64   `json:"register"`
 	Pay       int64   `json:"pay"`
 	PayAmount float64 `json:"payAmount"`
+	Balance float64 `json:"balance"`
 }
 
 type Relation struct {
