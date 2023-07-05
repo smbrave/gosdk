@@ -3,6 +3,7 @@ package payapi
 type OrderUser struct {
 	UserId      string `json:"userId"`
 	UserName    string `json:"userName"`
+	CreateTime  string `json:"createTime"`
 	Source      string `json:"source"`
 	MobileBrand string `json:"brand"`
 	MobileModel string `json:"model"`
