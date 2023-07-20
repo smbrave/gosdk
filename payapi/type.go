@@ -4,6 +4,7 @@ type OrderUser struct {
 	UserId      string `json:"userId"`
 	UserName    string `json:"userName"`
 	CreateTime  string `json:"createTime"`
+	Openid      string `json:"openid"`
 	Source      string `json:"source"`
 	MobileBrand string `json:"brand"`
 	MobileModel string `json:"model"`
@@ -23,6 +24,7 @@ type CreateOrderReq struct {
 	PayType    string      `json:"payType"`
 	PayChannel string      `json:"payChannel"`
 	PayPrice   int64       `json:"payPrice"`
+	PaySource  string      `json:"paySource"`
 	NotifyUrl  string      `json:"notifyUrl"`
 	User       *OrderUser  `json:"user,omitempty"`
 	Goods      *OrderGoods `json:"goods,omitempty"`
