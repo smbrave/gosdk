@@ -114,6 +114,7 @@ func (s *Sdk) Match(c *Request) (*Result, error) {
 	params.Add("ip", c.Ip)
 	params.Add("ua", c.Ua)
 	params.Add("model", c.Model)
+	params.Add("brand", c.Brand)
 	params.Add("idfa", c.Idfa)
 	params.Add("oaid", c.Oaid)
 	params.Add("imei", c.Imei)

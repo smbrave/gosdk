@@ -16,6 +16,7 @@ type Request struct {
 	Os      string            //手机系统类别 android、ioss
 	Ip      string            //客户端的外网ip
 	Ua      string            //客户端的user-agent
+	Brand   string            // 客户端手机品牌
 	Model   string            //客户端的手机型号，如：NOH-AN00
 	Idfa    string            //客户端的广告id，ios时候有效
 	Oaid    string            //客户端的广告id，android时有效
@@ -53,7 +54,7 @@ type AccountReport struct {
 	Register  int64   `json:"register"`
 	Pay       int64   `json:"pay"`
 	PayAmount float64 `json:"payAmount"`
-	Balance float64 `json:"balance"`
+	Balance   float64 `json:"balance"`
 }
 
 type Relation struct {
