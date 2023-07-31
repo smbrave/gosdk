@@ -1,5 +1,7 @@
 package metric
 
+import "os"
+
 var (
 	serv *service
 )
@@ -21,9 +23,11 @@ func Init(c *Config) error {
 		return nil
 	}
 
+	hostname, _ := os.Hostname()
 	serv = &service{
-		config:  c,
-		metrics: make(chan *metric, 100000),
+		config:   c,
+		hostname: hostname,
+		metrics:  make(chan *metric, 100000),
 	}
 	go serv.run()
 	return nil

@@ -21,9 +21,10 @@ type metric struct {
 }
 
 type service struct {
-	metrics chan *metric
-	megers  map[string]*metric
-	config  *Config
+	hostname string
+	metrics  chan *metric
+	megers   map[string]*metric
+	config   *Config
 }
 
 func (s *service) run() {
@@ -65,12 +66,24 @@ func (s *service) process(m *metric) {
 	s.megers[key] = m
 }
 
+func (s *service) defaultTags(tags map[string]string) map[string]string {
+	if tags == nil {
+		tags = map[string]string{
+			"hostname": s.hostname,
+		}
+	} else {
+		tags["hostname"] = s.hostname
+	}
+	return tags
+}
+
 func (s *service) report() {
 	if s.megers == nil {
 		return
 	}
 	metrics := make([]*metric, 0)
 	for _, v := range s.megers {
+		v.Tags = s.defaultTags(v.Tags)
 		metrics = append(metrics, v)
 	}
 	reqUrl := fmt.Sprintf("%s/opentsdb/put", serv.config.Address)
