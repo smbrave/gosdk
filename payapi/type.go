@@ -26,6 +26,7 @@ type CreateOrderReq struct {
 	PayPrice   int64       `json:"payPrice"`
 	PaySource  string      `json:"paySource"`
 	NotifyUrl  string      `json:"notifyUrl"`
+	Extra      interface{} `json:"extra"`
 	User       *OrderUser  `json:"user,omitempty"`
 	Goods      *OrderGoods `json:"goods,omitempty"`
 }
