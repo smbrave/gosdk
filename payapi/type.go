@@ -6,6 +6,7 @@ type OrderUser struct {
 	CreateTime  string `json:"createTime"`
 	Openid      string `json:"openid"`
 	Source      string `json:"source"`
+	SourceId    string `json:"sourceId"`
 	MobileBrand string `json:"brand"`
 	MobileModel string `json:"model"`
 	Platform    string `json:"platform"`
