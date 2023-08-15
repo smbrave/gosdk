@@ -24,7 +24,7 @@ func TestMetric(t *testing.T) {
 	c.Address = "https://monitor.batiao8.com"
 	Init(c)
 
-	Metric("test", 12, map[string]string{
+	Metric("test.test1.test2", 12, map[string]string{
 		"a": "b",
 		"c": "d",
 	})

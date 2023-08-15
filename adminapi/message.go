@@ -1,4 +1,4 @@
-package message
+package adminapi
 
 import (
 	"encoding/json"
