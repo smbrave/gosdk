@@ -13,17 +13,15 @@ import (
 
 type Sdk struct {
 	address string
-	appId   string
 	token   string
 }
 
-func NewSdk(address string, appId string, token string) *Sdk {
+func NewSdk(address string, token string) *Sdk {
 	if address == "" {
 		address = "http://127.0.0.1:9281"
 	}
 
 	return &Sdk{
-		appId:   appId,
 		address: address,
 		token:   token,
 	}
@@ -109,7 +107,6 @@ func (s *Sdk) Match(c *Request) (*Result, error) {
 
 	params := url.Values{}
 
-	params.Add("appId", s.appId)
 	params.Add("os", strings.ToLower(c.Os))
 	params.Add("ip", c.Ip)
 	params.Add("ua", c.Ua)
@@ -208,8 +205,8 @@ func (s *Sdk) GetAccountReport(startDay, endDay string, accountType string) ([]*
 		endDay = startDay
 	}
 
-	reqUrl := fmt.Sprintf("%s/api/ad/account/report?appId=%s&startDay=%s&endDay=%s&accountType=%s",
-		s.address, s.appId, startDay, endDay, accountType)
+	reqUrl := fmt.Sprintf("%s/api/ad/account/report?startDay=%s&endDay=%s&accountType=%s",
+		s.address, startDay, endDay, accountType)
 
 	body, err := util.HttpGet(reqUrl, map[string]string{
 		"x-token": s.token,
