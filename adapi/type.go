@@ -76,6 +76,7 @@ type Click struct {
 	GroupName    string `json:"groupName"`
 	CreativeId   int64  `json:"creativeId"`
 	CreativeName string `json:"creativeName"`
+	ClickTime    int64  `json:"clickTime"`
 	Ip           string `json:"ip"`
 	Ua           string `json:"ua"`
 	Idfa         string `json:"idfa"`
