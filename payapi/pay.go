@@ -53,3 +53,27 @@ func (p *Pay) CreateOrder(order *CreateOrderReq) (map[string]interface{}, error)
 
 	return rsp.Data, nil
 }
+
+func (p *Pay) GetOrder(outTradeNo string) (map[string]interface{}, error) {
+	if outTradeNo == "" {
+		errors.New("outTradeNo is nil")
+	}
+
+	reqUrl := fmt.Sprintf("%s/api/pay/order?outTradeNo=%s", p.address, outTradeNo)
+	result, err := util.HttpGet(reqUrl, map[string]string{
+		"x-token": p.token,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	var rsp CommonResponse
+	if err := json.Unmarshal([]byte(result), &rsp); err != nil {
+		return nil, err
+	}
+	if rsp.Code != 0 {
+		return nil, fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
+	}
+
+	return rsp.Data, nil
+}
