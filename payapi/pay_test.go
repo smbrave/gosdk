@@ -1,6 +1,7 @@
 package payapi
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 )
@@ -11,5 +12,6 @@ func TestNewPay(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(order)
+	res, _ := json.Marshal(order)
+	fmt.Println(string(res))
 }
