@@ -78,12 +78,12 @@ func (p *Pay) GetOrder(outTradeNo string) (map[string]interface{}, error) {
 	return rsp.Data, nil
 }
 
-func (p *Pay) RefundOrder(outTradeNo string) error {
+func (p *Pay) RefundOrder(outTradeNo, reason string) error {
 	if outTradeNo == "" {
 		errors.New("outTradeNo is nil")
 	}
 
-	reqUrl := fmt.Sprintf("%s/api/pay/order?outTradeNo=%s", p.address, outTradeNo)
+	reqUrl := fmt.Sprintf("%s/api/pay/order?outTradeNo=%s&reason=%s", p.address, outTradeNo, reason)
 	result, err := util.HttpDelete(reqUrl, map[string]string{
 		"x-token": p.token,
 	})
