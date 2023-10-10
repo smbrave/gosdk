@@ -18,7 +18,6 @@ type OrderGoods struct {
 	GoodsName string `json:"goodsName"`
 	Source    string `json:"source"`
 	Autopay   string `json:"autopay"`
-	Autoprice int64  `json:"autoprice"`
 }
 
 type CreateOrderReq struct {
