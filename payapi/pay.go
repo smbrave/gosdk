@@ -54,7 +54,7 @@ func (p *Pay) CreateOrder(order *CreateOrderReq) (map[string]interface{}, error)
 	return rsp.Data, nil
 }
 
-func (p *Pay) UpdateOrder(userId int64, data map[string]interface{}) error {
+func (p *Pay) UpdateOrder(data map[string]interface{}) error {
 	reqBody, _ := json.Marshal(data)
 
 	result, err := util.HttpPutJson(p.address+"/api/pay/order", map[string]string{
