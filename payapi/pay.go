@@ -54,6 +54,27 @@ func (p *Pay) CreateOrder(order *CreateOrderReq) (map[string]interface{}, error)
 	return rsp.Data, nil
 }
 
+func (p *Pay) UpdateOrder(userId int64, data map[string]interface{}) error {
+	reqBody, _ := json.Marshal(data)
+
+	result, err := util.HttpPutJson(p.address+"/api/pay/order", map[string]string{
+		"x-token": p.token,
+	}, reqBody)
+
+	if err != nil {
+		return err
+	}
+	var rsp CommonResponse
+	if err := json.Unmarshal([]byte(result), &rsp); err != nil {
+		return err
+	}
+	if rsp.Code != 0 {
+		return fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
+	}
+
+	return nil
+}
+
 func (p *Pay) GetOrder(outTradeNo string) (map[string]interface{}, error) {
 	if outTradeNo == "" {
 		errors.New("outTradeNo is nil")
