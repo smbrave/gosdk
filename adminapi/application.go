@@ -21,7 +21,7 @@ func NewApplication(addreess string, token string) *Application {
 	}
 }
 
-func (m *Application) Login(username, password, appid string) error {
+func (m *Application) Login(username, password, appid string) (interface{}, error) {
 	reqUrl := fmt.Sprintf("%s/admin/app/login", m.address)
 	params := make(map[string]interface{})
 	params["username"] = username
@@ -33,14 +33,14 @@ func (m *Application) Login(username, password, appid string) error {
 	}, reqBody)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
-	var rsp util.Response
+	var rsp util.DataResponse
 	if err := json.Unmarshal(body, &rsp); err != nil {
-		return err
+		return nil, err
 	}
 	if rsp.Code != 0 {
-		return fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
+		return nil, fmt.Errorf("%d:%s", rsp.Code, rsp.Message)
 	}
-	return nil
+	return rsp.Data, nil
 }
